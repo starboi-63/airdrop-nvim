@@ -5,14 +5,19 @@ echo "=== AIRDROP NVIM ==="
 sudo apt-get update && sudo apt-get upgrade -y
 
 echo "=== INSTALLING PREREQS ==="
-sudo apt-get install curl unzip ripgrep ccls golang -y
+sudo apt-get install ninja-build gettext cmake build-essential curl unzip ripgrep ccls golang -y
 
 echo "=== INSTALLING NEOVIM ==="
 cd
-curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
-sudo rm -rf /opt/nvim
-sudo tar -C /opt -xzf nvim-linux64.tar.gz
-echo 'export PATH="$PATH:/opt/nvim-linux64/bin"' >> ~/.bashrc
+git clone https://github.com/neovim/neovim.git && cd neovim
+make CMAKE_BUILD_TYPE=Release
+sudo make install
+
+# cd
+# curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
+# sudo rm -rf /opt/nvim
+# sudo tar -C /opt -xzf nvim-linux64.tar.gz
+# echo 'export PATH="$PATH:/opt/nvim-linux64/bin"' >> ~/.bashrc
 
 # echo "=== INSTALLING CLANGD ==="
 # cp -r ~/airdrop-nvim/clangd/ ~/.local/share/nvim/mason/packages/
