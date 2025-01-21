@@ -20,7 +20,7 @@ echo 'export PATH="$PATH:/opt/nvim-linux64/bin"' >> ~/.bashrc
 
 echo "=== INSTALLING CLANGD ==="
 cp -r ~/airdrop-nvim/clangd/mason* ~/.local/share/nvim/mason/packages/
-wget -O ~/.local/share/nvim/mason/packages/clangd/ https://github.com/clangd/clangd/releases/download/19.1.2/clangd-linux-19.1.2.zip
+wget -O ~/.local/share/nvim/mason/packages/clangd/clangd_19.1.2.zip https://github.com/clangd/clangd/releases/download/19.1.2/clangd-linux-19.1.2.zip
 unzip ~/.local/share/nvim/mason/packages/clangd/clangd_19.1.2.zip && rm ~/.local/share/nvim/mason/packages/clangd/clangd_19.1.2.zip
 
 echo "=== INSTALLING NEOVIM CONFIG ==="
