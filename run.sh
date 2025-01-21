@@ -5,7 +5,7 @@ echo "=== AIRDROP NVIM ==="
 sudo apt-get update && sudo apt-get upgrade -y
 
 echo "=== INSTALLING PREREQS ==="
-sudo apt-get install ninja-build gettext cmake build-essential curl unzip ripgrep ccls golang -y
+sudo apt-get install ninja-build gettext cmake build-essential curl unzip ripgrep clangd golang -y
 
 echo "=== BUILDING NEOVIM ==="
 cd
