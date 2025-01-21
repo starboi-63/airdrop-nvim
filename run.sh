@@ -5,7 +5,7 @@ echo "=== AIRDROP NVIM ==="
 sudo apt-get update && sudo apt-get upgrade -y
 
 echo "=== INSTALLING PREREQS ==="
-sudo apt-get install cmake curl unzip ripgrep libclang-10-dev golang -y
+sudo apt-get install cmake curl unzip ripgrep ccls golang -y
 
 echo "=== INSTALLING NEOVIM ==="
 cd
