@@ -2,11 +2,12 @@
 
 echo "=== AIRDROP NVIM ==="
 
+apt-get install sudo
 sudo apt-get update && sudo apt-get upgrade -y
 
 echo "=== INSTALLING PREREQS ==="
 # TODO: specify clangd vs ccls
-sudo apt-get install ninja-build gettext cmake build-essential curl unzip ripgrep bear neofetch ccls -y
+sudo apt-get install ninja-build gettext cmake build-essential curl unzip ripgrep bear neofetch ccls fd-find -y
 
 echo "=== BUILDING NEOVIM ==="
 cd
