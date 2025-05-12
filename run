@@ -52,6 +52,7 @@ main() {
   echo "=== INSTALLING NVIM CONFIG ==="
   rm -rf "$DOTFILES_DIR"
   git clone https://github.com/starboi-63/dotfiles.git "$DOTFILES_DIR"
+  rm -rf "$NVIM_CONFIG_DIR"
   mkdir -p "$NVIM_CONFIG_DIR"
   cp -r "$DOTFILES_DIR/home/.config/nvim/"* "$NVIM_CONFIG_DIR/"
 
