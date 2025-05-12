@@ -15,6 +15,7 @@ cleanup() {
          "$NVIM_CONFIG_DIR"
   # Undo the pip install; ignore errors if pip isn’t there
   command -v pip3 >/dev/null && pip3 uninstall -y compiledb || true
+  command -v npm  >/dev/null && sudo npm uninstall -g pyright || true
 }
 
 # Run cleanup() if any command fails (non‑zero exit)
@@ -29,10 +30,14 @@ main() {
       git ninja-build cmake gettext \
       build-essential pkg-config libtool \
       curl unzip ripgrep fd-find xclip \
-      python3 python3-pip
+      python3 python3-pip \
+      nodejs npm
 
+  # Compilation database generator for C/C++
   pip3 install --user compiledb
 
+  # LSPs for Python and C/C++
+  sudo npm install --global pyright
   sudo apt-get install -y clangd
 
   # Install NeoVim 
