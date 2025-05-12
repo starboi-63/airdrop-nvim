@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
-#–– List what to remove on failure
+# -E makes ERR traps inherit into functions/subshells
+set -eEuo pipefail  
+
+# List what to remove on failure
 NEOVIM_DIR="$HOME/neovim"
 DOTFILES_DIR="$HOME/dotfiles"
 NVIM_CONFIG_DIR="$HOME/.config/nvim"
@@ -14,6 +16,7 @@ cleanup() {
   # Undo the pip install; ignore errors if pip isn’t there
   command -v pip3 >/dev/null && pip3 uninstall -y compiledb || true
 }
+
 # Run cleanup() if any command fails (non‑zero exit)
 trap cleanup ERR
 
