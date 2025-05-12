@@ -1,48 +1,57 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "=== AIRDROP NVIM ==="
+#–– List what to remove on failure
+NEOVIM_DIR="$HOME/neovim"
+DOTFILES_DIR="$HOME/dotfiles"
+NVIM_CONFIG_DIR="$HOME/.config/nvim"
 
-# 1. Update system and upgrade packages
-sudo apt-get update && sudo apt-get upgrade -y
+cleanup() {
+  echo "⚠️  ERROR: cleaning up partial install…"
+  rm -rf "$NEOVIM_DIR" \
+         "$DOTFILES_DIR" \
+         "$NVIM_CONFIG_DIR"
+  # Undo the pip install; ignore errors if pip isn’t there
+  command -v pip3 >/dev/null && pip3 uninstall -y compiledb || true
+}
+# Run cleanup() if any command fails (non‑zero exit)
+trap cleanup ERR
 
-# 2. Install build/runtime dependencies
-#    - git: clone repos
-#    - ninja-build, cmake, gettext, build-essential, pkg-config, libtool: Neovim source build
-#    - curl, unzip: download & extract
-#    - ripgrep, fd-find: fuzzy/file searching
-#    - xclip: system clipboard support in terminal Neovim
-sudo apt-get install -y \
-    git ninja-build cmake gettext \
-    build-essential pkg-config libtool \
-    curl unzip ripgrep fd-find xclip
+main() {
+  # Install all dependencies
+  echo "=== AIRDROP NVIM ==="
+  sudo apt-get update && sudo apt-get upgrade -y
 
-# 3. Install Compiledb for compile_commands.json generation
-pip3 install --user compiledb
+  sudo apt-get install -y \
+      git ninja-build cmake gettext \
+      build-essential pkg-config libtool \
+      curl unzip ripgrep fd-find xclip \
+      python3 python3-pip
 
-# 4. Install a C/C++ LSP server (clangd) — adjust if you prefer ccls or another
-sudo apt-get install -y clangd
+  pip3 install --user compiledb
 
-# 5. Build and install Neovim from source (portable across architectures)
-echo "=== BUILDING NEOVIM ==="
-cd "$HOME"
-if [ -d neovim ]; then
-  rm -rf neovim
-fi
-git clone https://github.com/neovim/neovim.git
-cd neovim
-make CMAKE_BUILD_TYPE=Release
-sudo make install
+  sudo apt-get install -y clangd
 
-# 6. Deploy your custom Neovim config from your dotfiles repo
-echo "=== INSTALLING NVIM CONFIG ==="
-cd "$HOME"
-if [ -d dotfiles ]; then
-  rm -rf dotfiles
-fi
-git clone https://github.com/starboi-63/dotfiles.git
-mkdir -p ~/.config/nvim
-cp -r ~/dotfiles/home/.config/nvim/* ~/.config/nvim/
+  # Install NeoVim 
+  echo "=== BUILDING NEOVIM ==="
+  rm -rf "$NEOVIM_DIR"
+  git clone https://github.com/neovim/neovim.git "$NEOVIM_DIR"
+  cd "$NEOVIM_DIR"
+  make CMAKE_BUILD_TYPE=Release
+  sudo make install
 
-echo "=== AIRDROP NVIM COMPLETE ==="
+  # Install custom NeoVim config from dotfiles repository
+  echo "=== INSTALLING NVIM CONFIG ==="
+  rm -rf "$DOTFILES_DIR"
+  git clone https://github.com/starboi-63/dotfiles.git "$DOTFILES_DIR"
+  mkdir -p "$NVIM_CONFIG_DIR"
+  cp -r "$DOTFILES_DIR/home/.config/nvim/"* "$NVIM_CONFIG_DIR/"
+
+  # If we reach here, everything succeeded: disable the ERR trap
+  trap - ERR
+
+  echo "=== AIRDROP NVIM COMPLETE ==="
+}
+
+main
 
