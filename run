@@ -1,27 +1,48 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 echo "=== AIRDROP NVIM ==="
 
-apt-get install sudo
+# 1. Update system and upgrade packages
 sudo apt-get update && sudo apt-get upgrade -y
 
-echo "=== INSTALLING PREREQS ==="
-# TODO: specify clangd vs ccls
-sudo apt-get install ninja-build gettext cmake build-essential curl unzip ripgrep bear neofetch ccls fd-find -y
+# 2. Install build/runtime dependencies
+#    - git: clone repos
+#    - ninja-build, cmake, gettext, build-essential, pkg-config, libtool: Neovim source build
+#    - curl, unzip: download & extract
+#    - ripgrep, fd-find: fuzzy/file searching
+#    - xclip: system clipboard support in terminal Neovim
+sudo apt-get install -y \
+    git ninja-build cmake gettext \
+    build-essential pkg-config libtool \
+    curl unzip ripgrep fd-find xclip
 
+# 3. Install Compiledb for compile_commands.json generation
+pip3 install --user compiledb
+
+# 4. Install a C/C++ LSP server (clangd) — adjust if you prefer ccls or another
+sudo apt-get install -y clangd
+
+# 5. Build and install Neovim from source (portable across architectures)
 echo "=== BUILDING NEOVIM ==="
-cd
-git clone https://github.com/neovim/neovim.git && cd neovim
+cd "$HOME"
+if [ -d neovim ]; then
+  rm -rf neovim
+fi
+git clone https://github.com/neovim/neovim.git
+cd neovim
 make CMAKE_BUILD_TYPE=Release
 sudo make install
 
-echo "=== INSTALLING NEOVIM CONFIG ==="
-mkdir ~/.config && cd ~/.config
-git clone https://github.com/kberdos/nvim.git && cd nvim
-git switch container
+# 6. Deploy your custom Neovim config from your dotfiles repo
+echo "=== INSTALLING NVIM CONFIG ==="
+cd "$HOME"
+if [ -d dotfiles ]; then
+  rm -rf dotfiles
+fi
+git clone https://github.com/starboi-63/dotfiles.git
+mkdir -p ~/.config/nvim
+cp -r ~/dotfiles/home/.config/nvim/* ~/.config/nvim/
 
-# TODO: install neofetch and place in bashrc
-# TODO: start script for podman
+echo "=== AIRDROP NVIM COMPLETE ==="
 
-cd
-exec bash
