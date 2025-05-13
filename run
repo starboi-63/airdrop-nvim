@@ -24,12 +24,23 @@ print_error() {
 # Function for deleting any newly created directories on failure
 cleanup() {
   print_error "=== ERROR: cleaning up partial install ==="
+
+  # Remove repos and config dirs
   rm -rf "$NEOVIM_DIR" \
          "$DOTFILES_DIR" \
          "$NVIM_CONFIG_DIR"
-  # Undo the pip install; ignore errors if pip isn’t there
+
+  # Undo user‑level installs
   command -v pip3 >/dev/null && pip3 uninstall -y compiledb || true
   command -v npm  >/dev/null && sudo npm uninstall -g pyright || true
+
+  # Remove any Neovim install artifacts under /usr/local
+  sudo rm -rf /usr/local/bin/nvim \
+              /usr/local/lib/nvim
+
+  # Remove leftover LSP binaries just in case
+  sudo rm -f /usr/local/bin/pyright \
+             /usr/local/bin/pyright-langserver || true
 }
 
 # Run cleanup() if any command fails (non‑zero exit)
