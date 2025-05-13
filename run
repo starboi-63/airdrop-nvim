@@ -17,12 +17,12 @@ print_section() {
 
 print_error() {
   echo
-  echo -e "\033[1;31m=== $1 ===\033[0m"
+  echo -e "\033[1;31m$1\033[0m"
   echo
 }
 
 cleanup() {
-  print_error "⚠️  ERROR: cleaning up partial install…"
+  print_error "=== ERROR: cleaning up partial install ==="
   rm -rf "$NEOVIM_DIR" \
          "$DOTFILES_DIR" \
          "$NVIM_CONFIG_DIR"
