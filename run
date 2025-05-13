@@ -3,13 +3,26 @@
 # -E makes ERR traps inherit into functions/subshells
 set -eEuo pipefail  
 
-# List what to remove on failure
+# Directory variables
 NEOVIM_DIR="$HOME/neovim"
 DOTFILES_DIR="$HOME/dotfiles"
 NVIM_CONFIG_DIR="$HOME/.config/nvim"
 
+# Functions for stylized output
+print_section() {
+  echo
+  echo -e "\033[1;34m$1\033[0m"
+  echo
+}
+
+print_error() {
+  echo
+  echo -e "\033[1;41m\033[1;37m$1\033[0m"
+  echo
+}
+
 cleanup() {
-  echo "⚠️  ERROR: cleaning up partial install…"
+  print_error "⚠️  ERROR: cleaning up partial install…"
   rm -rf "$NEOVIM_DIR" \
          "$DOTFILES_DIR" \
          "$NVIM_CONFIG_DIR"
@@ -23,7 +36,7 @@ trap cleanup ERR
 
 main() {
   # Install all dependencies
-  echo "=== AIRDROP NVIM ==="
+  print_section "=== AIRDROP NVIM ==="
   sudo apt-get update && sudo apt-get upgrade -y
 
   sudo apt-get install -y \
@@ -40,8 +53,8 @@ main() {
   sudo npm install --global pyright
   sudo apt-get install -y clangd
 
-  # Install NeoVim 
-  echo "=== BUILDING NEOVIM ==="
+  # Install NeoVim
+  print_section "=== BUILDING NEOVIM ==="
   rm -rf "$NEOVIM_DIR"
   git clone https://github.com/neovim/neovim.git "$NEOVIM_DIR"
   cd "$NEOVIM_DIR"
@@ -49,7 +62,7 @@ main() {
   sudo make install
 
   # Install custom NeoVim config from dotfiles repository
-  echo "=== INSTALLING NVIM CONFIG ==="
+  print_section "=== INSTALLING NVIM CONFIG ==="
   rm -rf "$DOTFILES_DIR"
   git clone https://github.com/starboi-63/dotfiles.git "$DOTFILES_DIR"
   rm -rf "$NVIM_CONFIG_DIR"
@@ -59,7 +72,7 @@ main() {
   # If we reach here, everything succeeded: disable the ERR trap
   trap - ERR
 
-  echo "=== AIRDROP NVIM COMPLETE ==="
+  print_section "=== AIRDROP NVIM COMPLETE ==="
 }
 
 main
