@@ -21,6 +21,7 @@ print_error() {
   echo
 }
 
+# Function for deleting any newly created directories on failure
 cleanup() {
   print_error "=== ERROR: cleaning up partial install ==="
   rm -rf "$NEOVIM_DIR" \
@@ -53,10 +54,10 @@ main() {
   sudo npm install --global pyright
   sudo apt-get install -y clangd
 
-  # Install NeoVim
+  # Install NeoVim (stable)
   print_section "=== BUILDING NEOVIM ==="
   rm -rf "$NEOVIM_DIR"
-  git clone https://github.com/neovim/neovim.git "$NEOVIM_DIR"
+  git clone --branch stable https://github.com/neovim/neovim.git "$NEOVIM_DIR"
   cd "$NEOVIM_DIR"
   make CMAKE_BUILD_TYPE=Release
   sudo make install
